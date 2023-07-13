@@ -1,4 +1,4 @@
-AirBnB Clone - The Console (Part 1)
+**AirBnB Clone - The Console (Part 1)**
 
 Description
 First step: Write a command interpreter to manage your AirBnB objects.
