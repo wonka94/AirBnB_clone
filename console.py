@@ -53,28 +53,27 @@ class HBNBCommand(cmd.Cmd):
         "Review"
     }
 
-    def blank_line(self):
+    def emptyline(self):
         """Do nothing upon receiving a blank line."""
         pass
 
-    def end_of_file(self, arg):
+    def do_EOF(self, arg):
         """Handle EOF signal to exit the program."""
         print("")
         return True
 
-    def _quit(self, arg):
+    def do_quit(self, arg):
         """Quit command to exit the program."""
         return True
 
-    def default_behavior(self, arg):
+    def default(self, arg):
         """Default action for invalid input"""
         cmd_dict = {
-            "all": self.display_all,
-            "count": self.count_instances,
-            "create": self.create_instance,
-            "destroy": self.delete_instance,
-            "show": self.display_instance,
-            "update": self.update_instance
+            "all": self.do_all,
+            "count": self.do_count,
+            "destroy": self.do_destroy,
+            "show": self.do_show,
+            "update": self.do_update
         }
         match = re.search(r"\.", arg)
         if match is not None:
@@ -88,11 +87,11 @@ class HBNBCommand(cmd.Cmd):
         print("*** Unknown syntax: {}".format(arg))
         return False
 
-    def display_all(self, input_arg):
+    def do_all(self, input_arg):
         """Usage: all or all <class> or <class>.all()
         Display string representations of all instances of a given class.
         If no class is specified, displays all instantiated objects."""
-        arg_list = parse(input_arg)
+        arg_list = process_input(input_arg)
         if len(arg_list) > 0 and arg_list[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
@@ -104,7 +103,7 @@ class HBNBCommand(cmd.Cmd):
                     object_list.append(obj.__str__())
             print(object_list)
 
-    def count_instances(self, input_arg):
+    def do_count(self, input_arg):
         """Usage: count <class> or <class>.count()
         Retrieve the number of instances of a given class.
         """
@@ -115,7 +114,7 @@ class HBNBCommand(cmd.Cmd):
                 instance_count += 1
         print(instance_count)
 
-    def create_instance(self, input_arg):
+    def do_create(self, input_arg):
         """Usage: create <class>
         Create a new class instance and print its id.
         """
@@ -129,24 +128,24 @@ class HBNBCommand(cmd.Cmd):
             print(new_instance.id)
             storage.save()
 
-    def delete_instance(self, input_arg):
+    def do_destroy(self, input_arg):
         """Usage: destroy <class> <id> or <class>.destroy(<id>)
         Delete a class instance of a given id."""
-        arg_list = process_input(input_arg)
+        args = process_input(input_arg)
         object_dict = storage.all()
-        if len(arg_list) == 0:
+        if len(args) == 0:
             print("** class name missing **")
-        elif arg_list[0] not in HBNBCommand.__classes:
+        elif args[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-        elif len(arg_list) == 1:
+        elif len(args) == 1:
             print("** instance id missing **")
-        elif "{}.{}".format(arg_list[0], arg_list[1]) not in object_dict.keys():
+        elif "{}.{}".format(args[0], args[1]) not in object_dict.keys():
             print("** no instance found **")
         else:
-            del object_dict["{}.{}".format(arg_list[0], arg_list[1])]
+            del object_dict["{}.{}".format(args[0], args[1])]
             storage.save()
 
-    def display_instance(self, input_arg):
+    def do_show(self, input_arg):
         """Usage: show <class> <id> or <class>.show(<id>)
         Display the string representation of a class instance of a given id.
         """
@@ -163,7 +162,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             print(object_dict["{}.{}".format(arg_list[0], arg_list[1])])
 
-    def update_instance(self, input_arg):
+    def do_update(self, input_arg):
         """Usage: update <class> <id> <attribute_name> <attribute_value> or
            <class>.update(<id>, <attribute_name>, <attribute_value>) or
            <class>.update(<id>, <dictionary>)
@@ -213,5 +212,5 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     HBNBCommand().cmdloop()
