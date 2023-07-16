@@ -67,7 +67,7 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def default_behavior(self, arg):
-        """Default action invalid input"""
+        """Default action for invalid input"""
         cmd_dict = {
             "all": self.display_all,
             "count": self.count_instances,
@@ -83,20 +83,22 @@ class HBNBCommand(cmd.Cmd):
             if match is not None:
                 cmd = [arg_list[1][:match.span()[0]], match.group()[1:-1]]
                 if cmd[0] in cmd_dict.keys():
-                    call_cmd = "{} {}".format(argl[0], cmd[1])
+                    call_cmd = "{} {}".format(arg_list[0], cmd[1])
                     return cmd_dict[cmd[0]](call_cmd)
+        print("*** Unknown syntax: {}".format(arg))
+        return False
 
     def display_all(self, input_arg):
         """Usage: all or all <class> or <class>.all()
         Display string representations of all instances of a given class.
         If no class is specified, displays all instantiated objects."""
-        in_list = parse(input_arg)
+        arg_list = parse(input_arg)
         if len(input_list) > 0 and input_list[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
             object_list = []
             for obj in storage.all().values():
-                if len(in_list) > 0 and in_list[0] == obj.__class__.__name__:
+                if len(arg_list) > 0 and arg_list[0] == obj.__class__.__name__:
                     object_list.append(obj.__str__())
                 elif len(input_list) == 0:
                     object_list.append(obj.__str__())
@@ -130,7 +132,7 @@ class HBNBCommand(cmd.Cmd):
     def delete_instance(self, input_arg):
         """Usage: destroy <class> <id> or <class>.destroy(<id>)
         Delete a class instance of a given id."""
-        in_list = process_input(input_arg)
+        arg_list = process_input(input_arg)
         object_dict = storage.all()
         if len(input_list) == 0:
             print("** class name missing **")
@@ -138,7 +140,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         elif len(input_list) == 1:
             print("** instance id missing **")
-        elif "{}.{}".format(in_list[0], in_list[1]) not in object_dict.keys():
+        elif "{}.{}".format(arg_list[0], arg_list[1]) not in object_dict.keys():
             print("** no instance found **")
         else:
             del object_dict["{}.{}".format(input_list[0], input_list[1])]
@@ -148,18 +150,18 @@ class HBNBCommand(cmd.Cmd):
         """Usage: show <class> <id> or <class>.show(<id>)
         Display the string representation of a class instance of a given id.
         """
-        in_list = process_input(input_arg)
+        arg_list = process_input(input_arg)
         object_dict = storage.all()
-        if len(in_list) == 0:
+        if len(arg_list) == 0:
             print("** class name missing **")
-        elif in_list[0] not in HBNBCommand.__classes:
+        elif arg_list[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-        elif len(in_list) == 1:
+        elif len(arg_list) == 1:
             print("** instance id missing **")
-        elif "{}.{}".format(in_list[0], in_list[1]) not in object_dict:
+        elif "{}.{}".format(arg_list[0], arg_list[1]) not in object_dict:
             print("** no instance found **")
         else:
-            print(object_dict["{}.{}".format(in_list[0], in_list[1])])
+            print(object_dict["{}.{}".format(arg_list[0], arg_list[1])])
 
     def update_instance(self, input_arg):
         """Usage: update <class> <id> <attribute_name> <attribute_value> or
@@ -170,38 +172,38 @@ class HBNBCommand(cmd.Cmd):
         input_list = process_input(input_arg)
         object_dict = storage.all()
 
-        if len(in_list) == 0:
+        if len(arg_list) == 0:
             print("** class name missing **")
             return False
-        if in_list[0] not in HBNBCommand.__classes:
+        if arg_list[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
             return False
-        if len(in_list) == 1:
+        if len(arg_list) == 1:
             print("** instance id missing **")
             return False
-        if "{}.{}".format(in_list[0], in_list[1]) not in object_dict.keys():
+        if "{}.{}".format(arg_list[0], arg_list[1]) not in object_dict.keys():
             print("** no instance found **")
             return False
-        if len(in_list) == 2:
+        if len(arg_list) == 2:
             print("** attribute name missing **")
             return False
-        if len(in_list) == 3:
+        if len(arg_list) == 3:
             try:
-                type(eval(in_list[2])) != dict
+                type(eval(arg_list[2])) != dict
             except NameError:
                 print("** value missing **")
                 return False
 
-        if len(in_list) == 4:
-            obj = object_dict["{}.{}".format(in_list[0], in_list[1])]
-            if in_list[2] in obj.__class__.__dict__.keys():
-                value_type = type(obj.__class__.__dict__[in_list[2]])
-                obj.__dict__[in_list[2]] = value_type(in_list[3])
+        if len(arg_list) == 4:
+            obj = object_dict["{}.{}".format(arg_list[0], arg_list[1])]
+            if arg_list[2] in obj.__class__.__dict__.keys():
+                value_type = type(obj.__class__.__dict__[arg_list[2]])
+                obj.__dict__[arg_list[2]] = value_type(arg_list[3])
             else:
-                obj.__dict__[in_list[2]] = in_list[3]
-        elif type(eval(in_list[2])) == dict:
-            obj = object_dict["{}.{}".format(in_list[0], in_list[1])]
-            for k, value in eval(in_list[2]).items():
+                obj.__dict__[arg_list[2]] = arg_list[3]
+        elif type(eval(arg_list[2])) == dict:
+            obj = object_dict["{}.{}".format(arg_list[0], arg_list[1])]
+            for k, value in eval(arg_list[2]).items():
                 if (k in obj.__class__.__dict__.keys() and
                         type(obj.__class__.__dict__[k]) in {str, int, float}):
                     value_type = type(obj.__class__.__dict__[k])
