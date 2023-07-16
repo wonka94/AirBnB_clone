@@ -28,7 +28,7 @@ class BaseModel:
                 else:
                     self.__dict__[key] = value
         else:
-            models.storage.new(self)
+            models.file_storage.new(self)
 
     def __str__(self):
         """Return the string representation of the BaseModel instance."""
@@ -53,4 +53,4 @@ class BaseModel:
     def save(self):
         """Update updated_at with the current datetime."""
         self.updated_at = datetime.today()
-        models.storage.save()
+        models.file_storage.save()
