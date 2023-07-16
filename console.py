@@ -93,14 +93,14 @@ class HBNBCommand(cmd.Cmd):
         Display string representations of all instances of a given class.
         If no class is specified, displays all instantiated objects."""
         arg_list = parse(input_arg)
-        if len(input_list) > 0 and input_list[0] not in HBNBCommand.__classes:
+        if len(arg_list) > 0 and arg_list[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
             object_list = []
             for obj in storage.all().values():
                 if len(arg_list) > 0 and arg_list[0] == obj.__class__.__name__:
                     object_list.append(obj.__str__())
-                elif len(input_list) == 0:
+                elif len(arg_list) == 0:
                     object_list.append(obj.__str__())
             print(object_list)
 
@@ -108,10 +108,10 @@ class HBNBCommand(cmd.Cmd):
         """Usage: count <class> or <class>.count()
         Retrieve the number of instances of a given class.
         """
-        input_list = process_input(input_arg)
+        arg_list = process_input(input_arg)
         instance_count = 0
         for obj in storage.all().values():
-            if input_list[0] == obj.__class__.__name__:
+            if arg_list[0] == obj.__class__.__name__:
                 instance_count += 1
         print(instance_count)
 
@@ -119,13 +119,13 @@ class HBNBCommand(cmd.Cmd):
         """Usage: create <class>
         Create a new class instance and print its id.
         """
-        input_list = process_input(input_arg)
-        if len(input_list) == 0:
+        arg_list = process_input(input_arg)
+        if len(arg_list) == 0:
             print("** class name missing **")
-        elif input_list[0] not in HBNBCommand.__classes:
+        elif arg_list[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
-            new_instance = eval(input_list[0])()
+            new_instance = eval(arg_list[0])()
             print(new_instance.id)
             storage.save()
 
@@ -134,16 +134,16 @@ class HBNBCommand(cmd.Cmd):
         Delete a class instance of a given id."""
         arg_list = process_input(input_arg)
         object_dict = storage.all()
-        if len(input_list) == 0:
+        if len(arg_list) == 0:
             print("** class name missing **")
-        elif input_list[0] not in HBNBCommand.__classes:
+        elif arg_list[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-        elif len(input_list) == 1:
+        elif len(arg_list) == 1:
             print("** instance id missing **")
         elif "{}.{}".format(arg_list[0], arg_list[1]) not in object_dict.keys():
             print("** no instance found **")
         else:
-            del object_dict["{}.{}".format(input_list[0], input_list[1])]
+            del object_dict["{}.{}".format(arg_list[0], arg_list[1])]
             storage.save()
 
     def display_instance(self, input_arg):
@@ -169,7 +169,7 @@ class HBNBCommand(cmd.Cmd):
            <class>.update(<id>, <dictionary>)
         Update a class instance of a given id by adding or updating
         a given attribute key/value pair or dictionary."""
-        input_list = process_input(input_arg)
+        arg_list = process_input(input_arg)
         object_dict = storage.all()
 
         if len(arg_list) == 0:
