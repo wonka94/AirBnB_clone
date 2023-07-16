@@ -23,18 +23,17 @@ class BaseModel:
 
         if len(kwargs) != 0:
             for key, value in kwargs.items():
-                if key in ["creation_time", "last_updated"]:
+                if key == "created_at" or key == "updated_at":
                     self.__dict__[key] = datetime.strptime(value, time_format)
                 else:
                     self.__dict__[key] = value
         else:
-            models.file_storage.new(self)
-
-    def __str__(self):
-        """Return the string representation of the BaseModel instance."""
-
-        className = self.__class__.__name__
-        return "[{}] ({}) {}".format(className, self.id, self.__dict__)
+            models.storage.new(self)
+    
+    def save(self):
+        """Update updated_at with the current datetime."""
+        self.updated_at = datetime.today()
+        models.storage.save()
 
     def to_dict(self):
         """
@@ -50,7 +49,8 @@ class BaseModel:
         instance_dict["__class__"] = self.__class__.__name__
         return instance_dict
 
-    def save(self):
-        """Update updated_at with the current datetime."""
-        self.updated_at = datetime.today()
-        models.file_storage.save()
+    def __str__(self):
+        """Return the string representation of the BaseModel instance."""
+
+        className = self.__class__.__name__
+        return "[{}] ({}) {}".format(className, self.id, self.__dict__)
