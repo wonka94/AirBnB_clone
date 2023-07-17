@@ -17,9 +17,10 @@ class BaseModel:
             kwargs: Arbitrary keyword arguments.
         """
         time_format = "%Y-%m-%dT%H:%M:%S.%f"
+        today = datetime.today()
         self.id = str(uuid4())
-        self.created_at = datetime.today()
-        self.updated_at = datetime.today()
+        self.created_at = today
+        self.updated_at = today
 
         if len(kwargs) != 0:
             for key, value in kwargs.items():
