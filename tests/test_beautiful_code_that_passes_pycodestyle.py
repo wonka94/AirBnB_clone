@@ -19,3 +19,7 @@ class DemoTest(unittest.TestCase):
         self.assertIsInstance(demo_class, DemoClass)
         self.assertTrue(hasattr(demo_class, "demo_method"))
         self.assertTrue("demo_function" in dir(de))
+
+
+if __name__ == "__main__":
+    unittest.main()
