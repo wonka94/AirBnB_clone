@@ -5,7 +5,7 @@
 
 import io
 import unittest
-import unittest.mock
+from unittest.mock import patch
 from console import process_input as pi
 from console import HBNBCommand as cc
 
@@ -55,10 +55,10 @@ class TestHBNBCommand(unittest.TestCase):
     def test_do_all(self):
         """test the do_all method"""
         out = io.StringIO
-        with unittest.mock.patch('sys.stdout', new_callable=out) as stdout:
+        with patch('sys.stdout', new_callable=out) as stdout:
             cc().do_all("zzz")
             self.assertEqual(stdout.getvalue(), "** class doesn't exist **\n")
-        with unittest.mock.patch('sys.stdout', new_callable=out) as stdout:
+        with patch('sys.stdout', new_callable=out) as stdout:
             cc().do_all("User")
             self.assertEqual(stdout.getvalue(), "[]\n")
 
