@@ -1,5 +1,5 @@
 # project custom files to be ignored
-save_file.json
+file.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

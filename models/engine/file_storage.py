@@ -17,7 +17,7 @@ class FileStorage:
         __file_path (str): Path to the JSON file.
         __objects (dict): A dictionary of instantiated objects.
     """
-    __file_path = "save_file.json"
+    __file_path = "file.json"
     __objects = {}
 
     def all(self):
